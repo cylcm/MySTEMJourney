@@ -4,7 +4,7 @@ export const PREFIX = 'csj:';
 export const SCHEMA_VERSION = 1;
 export const COLLECTIONS = ['student', 'achievements', 'projects', 'robotics', 'coding', 'science',
   'mathematics', 'visualReasoning', 'stemChallenges', 'goals', 'reflections', 'skills', 'evidence',
-  'interviews', 'monthlyReviews', 'settings'];
+  'interviews', 'monthlyReviews', 'sstPrep', 'settings'];
 const key = n => PREFIX + n;
 export const now = () => new Date().toISOString();
 export const uid = () => (crypto.randomUUID ? crypto.randomUUID() :
