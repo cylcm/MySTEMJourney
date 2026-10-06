@@ -2,10 +2,19 @@ import * as S from './core/storage.js';
 import { MODULES } from './core/modules.js';
 import { h, btn } from './ui/dom.js';
 import { buildSidebar, updateSidebar, setupDrawer } from './ui/sidebar.js';
-import { dashboard, placeholder } from './views/basic.js';
+import { placeholder } from './views/basic.js';
+import { dashboard } from './views/dashboard.js';
+import { skillsView } from './views/skills.js';
+import { sstView } from './views/sst.js';
+import { timelineView } from './views/timeline.js';
+import { reportsView } from './reports/index.js';
 import { settingsView } from './views/settings.js';
 import { downloadJSON } from './backup/backup.js';
 import { initPWA } from './pwa/pwa.js';
+import { initBanner } from './pwa/banner.js';
+import { engineView, hasConfig } from './modules/engine.js';
+import { profileView } from './views/profile.js';
+import { loadDemo } from './core/demo.js';
 
 const main = document.getElementById('main');
 const side = document.getElementById('sidebar');
@@ -22,16 +31,18 @@ function recovery(info) {
 function route() {
   const p = location.hash.replace(/^#\/?/, '').split('/');
   const m = MODULES.find(x => x.id === p[0]) || MODULES[0];
-  const sub = m.subs ? (m.subs.find(s => s.id === p[1]) || m.subs[0]).id : null;
-  return { m, sub };
+  const special = hasConfig(m.id) && ['add', 'view', 'edit'].includes(p[1]);
+  const sub = special ? p[1] : m.subs ? (m.subs.find(s => s.id === p[1]) || m.subs[0]).id : null;
+  return { m, sub, arg: p[2] };
 }
 
 function render() {
-  const { m, sub } = route();
-  updateSidebar(side, m.id, sub);
+  const { m, sub, arg } = route();
+  const navSub = m.subs && (m.subs.some(s => s.id === sub) ? sub : (m.filterNav && m.filterNav[arg]) || m.subs[0].id);
+  updateSidebar(side, m.id, navSub);
   let view;
   try {
-    view = m.id === 'dashboard' ? dashboard() : m.id === 'settings' ? settingsView(sub, render) : placeholder(m, sub);
+    view = m.id === 'dashboard' ? dashboard() : m.id === 'settings' ? settingsView(sub, render) : m.id === 'profile' ? profileView() : m.id === 'skills' ? skillsView(m, render) : m.id === 'sst' ? sstView(m, render) : m.id === 'timeline' ? timelineView(m) : m.id === 'reports' ? reportsView(m, sub, render) : hasConfig(m.id) ? engineView(m, sub, arg) : placeholder(m, sub);
   } catch (e) { view = h('div', { class: 'page' }, h('section', { class: 'card' }, h('h2', {}, 'This page could not load'), h('p', {}, e.message + ' Your data was not changed.'))); }
   main.replaceChildren(...[reminder(), view].filter(Boolean));
   document.title = m.label + ' · Cyllee STEM Journey';
@@ -54,9 +65,10 @@ else {
   if (info.firstRun) {
     const t = S.now();
     S.write('student', [{ id: S.uid(), createdAt: t, updatedAt: t, isDemo: true, name: 'DEMO — Cyllee', age: 'DEMO', school: 'DEMO — School name' }]);
+    loadDemo();
   }
   document.documentElement.dataset.size = S.getSettings().textSize || 'normal';
-  buildSidebar(side); setupDrawer(); initPWA();
+  buildSidebar(side); setupDrawer(); initPWA(); initBanner();
   addEventListener('hashchange', render);
   render();
 }
