@@ -3,6 +3,7 @@ import * as S from '../core/storage.js';
 import * as B from '../backup/backup.js';
 import * as P from '../pwa/pwa.js';
 import { MODULES } from '../core/modules.js';
+import { loadDemo } from '../core/demo.js';
 
 const section = (title, ...kids) => h('section', { class: 'card' }, h('h2', {}, title), ...kids);
 
@@ -14,7 +15,7 @@ export function settingsView(sub, rerender) {
     fn(rerender));
 }
 
-const profile = () => section('Profile Settings', h('p', {}, 'Profile editing (name, age, school, interests, photo) is built in Phase 2. The profile record already exists and is included in every backup.'));
+const profile = () => section('Profile Settings', h('p', {}, 'Edit name, age, school, interests and photo on the Profile page.'), h('a', { class: 'btn primary', href: '#/profile' }, 'Open Profile'));
 
 function appearance() {
   const cur = S.getSettings().textSize || 'normal';
@@ -77,7 +78,7 @@ function data(rerender) {
   return h('div', {},
     section('Storage', h('p', {}, `About ${(used / 1024).toFixed(1)} KB used of roughly 5 MB available (${pct}%).`), h('progress', { max: 100, value: pct, 'aria-label': 'Storage used' })),
     section('Demo data', h('p', {}, 'Removes only records marked DEMO. Your own records are not touched.'),
-      btn('Reset Demo Data', '', () => { if (confirm('Remove all DEMO records? Your own records stay.')) { try { S.removeDemo(); toast('Demo records removed'); rerender(); } catch (e) { toast(e.message, 'err'); } } })),
+      btn('Load demo data', '', () => { try { toast(loadDemo() + ' demo records added'); rerender(); } catch (e) { toast(e.message, 'err'); } }), ' ', btn('Reset Demo Data', '', () => { if (confirm('Remove all DEMO records? Your own records stay.')) { try { S.removeDemo(); toast('Demo records removed'); rerender(); } catch (e) { toast(e.message, 'err'); } } })),
     h('section', { class: 'card danger-zone' }, h('h2', {}, 'Danger zone'),
       h('p', {}, 'Reset Application Data permanently deletes every record on this device. Refreshing, closing or navigating never does this.'),
       btn('Reset Application Data', 'danger', () => resetDialog())));
@@ -99,6 +100,6 @@ function resetDialog() {
 }
 
 function about() {
-  return section('About', h('p', {}, 'Cyllee STEM Journey, standalone version, phase 1 (foundation).'), h('p', { class: 'muted' }, `Data format version ${S.SCHEMA_VERSION}. No data is sent anywhere; everything stays in this browser.`),
+  return section('About', h('p', {}, 'Cyllee STEM Journey, standalone version, phase 4 (reports and monthly review) — all planned phases.'), h('p', { class: 'muted' }, `Data format version ${S.SCHEMA_VERSION}. No data is sent anywhere; everything stays in this browser.`),
     h('p', { class: 'muted' }, 'This app records experiences and growth. It does not score, rank or predict admission.'));
 }
