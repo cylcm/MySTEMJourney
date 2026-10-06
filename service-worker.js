@@ -1,8 +1,8 @@
 // Bump CACHE when shipping new files so old caches are removed.
-const CACHE = 'csj-shell-v1';
+const CACHE = 'csj-shell-v4';
 const SHELL = ['./', 'index.html', 'manifest.json', 'css/app.css',
   'js/main.js', 'js/core/storage.js', 'js/core/modules.js', 'js/ui/dom.js', 'js/ui/sidebar.js',
-  'js/backup/backup.js', 'js/pwa/pwa.js', 'js/views/basic.js', 'js/views/settings.js',
+  'js/backup/backup.js', 'js/pwa/pwa.js', 'js/views/basic.js', 'js/views/settings.js', 'js/views/profile.js', 'js/modules/configs.js', 'js/modules/engine.js', 'js/core/demo.js', 'js/pwa/banner.js', 'js/core/records.js', 'js/views/dashboard.js', 'js/views/skills.js', 'js/views/sst.js', 'js/views/timeline.js', 'js/reports/data.js', 'js/reports/story.js', 'js/reports/gaps.js', 'js/reports/monthly.js', 'js/reports/printable.js', 'js/reports/index.js',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
