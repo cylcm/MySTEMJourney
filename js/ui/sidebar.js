@@ -1,5 +1,6 @@
 import { h } from './dom.js';
 import { MODULES } from '../core/modules.js';
+import { showInstallHelp } from '../pwa/banner.js';
 
 // Accordion behaviour comes from the route: only the active module is expanded.
 export function buildSidebar(el) {
@@ -17,6 +18,7 @@ export function buildSidebar(el) {
   });
   el.append(
     h('div', { class: 'brand' }, h('div', { class: 'brand-name' }, 'Cyllee STEM Journey'), h('div', { class: 'brand-sub' }, 'Explore • Build • Solve • Create')),
+    h('button', { type: 'button', class: 'btn pill', id: 'installPill', onclick: showInstallHelp }, '📲 Install / Add to Home Screen'),
     h('nav', { 'aria-label': 'Main menu' }, h('ul', { class: 'nav' }, items)));
 }
 
